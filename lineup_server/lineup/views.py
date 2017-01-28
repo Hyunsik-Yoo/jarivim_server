@@ -11,7 +11,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from datetime import datetime, timedelta
-from linearregression import datetime2second, getLinearRegression
 import json
 import dateutil.parser
 
@@ -53,7 +52,7 @@ def get_all_vote(request):
 
     result = {'data':result}
 
-    #Vote.objects.all().delete()
+    Vote.objects.all().delete()
     return Response(result, status=status.HTTP_201_CREATED)
 
 @api_view(['GET','POST'])
