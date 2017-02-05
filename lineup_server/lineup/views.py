@@ -98,7 +98,6 @@ def current(request):
     list_title = list(RestaurantList.objects.filter(category=parm_category))
     response = []
     for item in list_title:
-        print item.title
         predicted_proportion = PredictProportion.objects.filter(title = item.title, time= parm_time)
 
         print(len(predicted_proportion))
