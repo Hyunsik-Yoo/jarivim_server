@@ -20,5 +20,8 @@ class PredictProportion(models.Model):
     title = models.CharField(max_length=100, blank=False, default='')
     proportion = models.IntegerField(blank=False, default=0)
 
+class Category(models.Model):
+    name = models.CharField(max_length=100, blank=False, default='bob')
+
 
 # Create your models here.

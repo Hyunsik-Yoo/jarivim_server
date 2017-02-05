@@ -85,30 +85,29 @@ def vote_list(request):
 @api_view(['GET'])
 def current(request):
     try:
-        print 1
-        parm_category = request.GET['category']
-        print parm_category
+#        parm_category = request.GET['category']
+#        print parm_category
         parm_time = dateutil.parser.parse(request.GET['time'])
         print parm_time
         parm_time = int(parm_time.hour)*60 + int(parm_time.minute)
-        print('category: ', parm_category, ' time: ', parm_time)
+        print('time: ', parm_time)
     except:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    result = {}
 
-    list_title = list(RestaurantList.objects.filter(category=parm_category))
-    response = []
-    for item in list_title:
-        predicted_proportion = PredictProportion.objects.filter(title = item.title, time= parm_time)
-
-        print(len(predicted_proportion))
-        if(len(predicted_proportion) == 0):
-            proportion = 0
-        else:
-            proportion = predicted_proportion[0].proportion
-        response.append({'title':item.title,'proportion':proportion})
-
-    result = {"data":response}
-    print(result)
+    list_category = list(Category.objects.all())
+    for category in list_category:
+        response_category = []
+        list_restaurant = list(RestaurantList.objects.filter(category=category.name))
+        for restaurant in list_restaurant:
+            predicted_proportion = PredictProportion.objects.filter(title = restaurant.title, time= parm_time)
+            #print(len(predicted_proportion))
+            if(len(predicted_proportion) == 0):
+                proportion = 0
+            else:
+                proportion = predicted_proportion[0].proportion
+            response_category.append({'title':restaurant.title,'proportion':proportion})
+        result[category.name] = response_category
     return Response(result, status=status.HTTP_201_CREATED)
 
 

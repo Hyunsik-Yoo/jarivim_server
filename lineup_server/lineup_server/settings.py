@@ -25,7 +25,7 @@ SECRET_KEY = '(^jz3i)e3uqs-pb6rjuyko(c6$s8bawsjsbddx)%#41np9u7dr'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['222.239.249.114','dbgustlr92.cafe24.com']
+ALLOWED_HOSTS = ['222.239.249.114','dbgustlr92.cafe24.com', '127.0.0.1','localhost']
 
 
 # Application definition

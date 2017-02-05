@@ -4,4 +4,5 @@ from .models import *
 admin.site.register(RestaurantList)
 admin.site.register(Vote)
 admin.site.register(PredictProportion)
+admin.site.register(Category)
 # Register your models here.
