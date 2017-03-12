@@ -20,10 +20,7 @@ class Vote(models.Model):
     age = models.IntegerField(blank=False, default=0)
 
     def __str__(self):
-<<<<<<< HEAD
         # admin페이지에서 한눈에 알아보려고 Override함
-=======
->>>>>>> f06c766f03b07eb6cff71b2128354f2f9a0b2eae
         result = str(self.title) + '(' + str(self.proportion) + ')'
         return result
 
