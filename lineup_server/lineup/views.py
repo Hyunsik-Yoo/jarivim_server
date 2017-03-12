@@ -98,17 +98,17 @@ def vote(request):
         try:
             parm_sex = request.GET['sex']
         except:
-            parm_sex = ''
+            parm_sex = 'none'
 
         try:
             parm_age = request.GET['age']
         except:
-            parm_age = ''
-        #print ('title : ', parm_title, 'parm_proportion : ', parm_proportion, 'parm_time : ', parm_time)
-        vote = Vote(title=parm_title, time=parm_time, proportion=int(parm_proportion), sex = parm_sex, age = parm_age)
+            parm_age = 0
+        vote = Vote(title=parm_title, time=parm_time, proportion = int(parm_proportion), sex = parm_sex, age = parm_age)
         vote.save()
         return Response("Success",status=status.HTTP_201_CREATED)
-    except:
+    except Exception as e:
+        print(e)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
