@@ -1,16 +1,19 @@
 #-*- coding: utf-8 -*-
-from sklearn import linear_model
-import urllib2
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import Pipeline
+
+from urllib.request import urlopen
 import json
 import dateutil.parser
 import sqlite3
 import time
 from time import localtime, strftime
-import ConfigParser
+import configparser
 import os
-
-config = ConfigParser.ConfigParser()
-config.read('/home/jarivim_server/lineup_server/setting.ini')
+import numpy as np
+config = configparser.ConfigParser()
+config.read('setting.ini')
 
 SERVER_IP = config.get('SETTING','server_ip')
 
@@ -21,6 +24,7 @@ def json2dict(vote_dict,vote_list):
     vote_dict : json들이 저장되는 dictionary (이전에 저장된 dict뒤에 이어붙임)
     vote_list : 읽은 json['data']
     """
+
     for item in vote_list:
         title = item['title']
         proportion = item['proportion']
@@ -42,14 +46,14 @@ def json2dict(vote_dict,vote_list):
 
 def save2json(json_data):
     file_name = strftime('%Y%m%d',localtime()) + '.json'
-    with open('/home/jarivim_server/lineup_server/json/'+file_name, 'w') as outfile:
+    with open('json/'+file_name, 'w') as outfile:
             json.dump(json_data, outfile)
 
 
-
 #전체 투표 가지고오고 db에서 삭제
-vote_list = urllib2.urlopen("http://"+SERVER_IP+":8000/lineup/getvote/").read()
-json_data = json.loads(vote_list)
+vote_list = urlopen("http://"+SERVER_IP+":8000/lineup/getvote/").read()
+print(vote_list.decode('utf-8'))
+json_data = json.loads(vote_list.decode('utf-8'))
 
 save2json(json_data) # 오늘데이터를 json파일로 생성
 
@@ -57,17 +61,20 @@ vote_list = json_data['data']
 vote_dict = dict()
 vote_dict = json2dict(vote_dict, vote_list)
 
-for vote_json in os.listdir('/home/jarivim_server/lineup_server/json/'):
-    with open('/home/jarivim_server/lineup_server/json/'+vote_json) as json_data:
+for vote_json in os.listdir('json/'):
+    with open('json/'+vote_json) as json_data:
             d = json.load(json_data)
     vote_dict = json2dict(vote_dict, d['data'])
 
-regr = linear_model.LinearRegression()
+print(vote_dict)
 
-db_connector = sqlite3.connect('/home/jarivim_server/lineup_server/db.sqlite3')
+db_connector = sqlite3.connect('db.sqlite3')
 db_cursor = db_connector.cursor()
 
 db_cursor.execute('DELETE FROM lineup_predictproportion')
+
+regr = Pipeline([('poly', PolynomialFeatures(degree=2)),\
+    ('linear', LinearRegression(fit_intercept=False))])
 
 for title in vote_dict.keys():
     x_axis = vote_dict[title]['time']
@@ -83,13 +90,13 @@ for title in vote_dict.keys():
             predict_proportion = 0
 
         item = [minute, title, predict_proportion]
+        print(item)
         db_cursor.execute('INSERT INTO lineup_predictproportion(time, title, proportion) VALUES (?,?,?)', item)
         time.sleep(0.01) # sqlite write time limite 방지
         
-    #(title, time, proprotion)
-    print(regr.coef_)
 db_connector.commit()
 db_connector.close()
+
 
 
 
