@@ -90,7 +90,7 @@ for title in vote_dict.keys():
             predict_proportion = 0
 
         item = [minute, title, predict_proportion]
-        print(item)
+        #print(item)
         db_cursor.execute('INSERT INTO lineup_predictproportion(time, title, proportion) VALUES (?,?,?)', item)
         time.sleep(0.01) # sqlite write time limite 방지
         
