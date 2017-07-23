@@ -27,13 +27,17 @@ class JSONResponse(HttpResponse):
 
 @api_view(['GET'])
 def restaurent_list(request):
+    """
+    카테고리를 입력으로 받아서 해당 카테고리에 속하는 음식점 리스트 반환
+    """
     try:
         parm_category = request.GET['category']
     except:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        list = RestaurantList.objects.filter(category=parm_category)
+        # 카테고리에 해당하는 음식점 오브젝트 필터링
+        list = Restaurant.objects.filter(category=parm_category)
         serializer = restaurantSerializer(list, many=True)
         return JSONResponse(serializer.data)
 
@@ -45,24 +49,15 @@ def get_all_vote(request):
     """
     list_vote = Vote.objects.values()
 
-    result = []
-    for vote in list_vote:
-        title = vote['title']
-        time = vote['time']
-        proportion = vote['proportion']
-        sex = vote['sex']
-        age = vote['age']
-        result.append({'title':title, 'time':time, 'proportion':proportion, 'sex':sex, 'age':age})
-
-    result = {'data':result}
-
-    Vote.objects.all().delete()
-    return Response(result, status=status.HTTP_201_CREATED)
+    serializer = voteSerializer(list_vote, many=True)
+    return JSONResponse(serializer.data)
 
 
-#카테고리별 가게이름을 먼저 조회한 후, 디비에 예측된 값을 조회하여 제공
 @api_view(['GET'])
 def current(request):
+    """
+    카테고리별 가게이름을 먼저 조회한 후, 디비에 예측된 값을 조회하여 제공
+    """
     try:
         parm_time = dateutil.parser.parse(request.GET['time'])
         parm_time = int(parm_time.hour)*60 + int(parm_time.minute)
@@ -77,7 +72,6 @@ def current(request):
         list_restaurant = list(RestaurantList.objects.filter(category=category.name))
         for restaurant in list_restaurant:
             predicted_proportion = PredictProportion.objects.filter(title = restaurant.title, time= parm_time)
-            #print(len(predicted_proportion))
             if(len(predicted_proportion) == 0):
                 proportion = 0
             else:

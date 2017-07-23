@@ -16,7 +16,7 @@ config = configparser.ConfigParser()
 config.read('setting.ini')
 
 SERVER_IP = config.get('SETTING','server_ip')
-
+SAVE_DIRECTORY = config.get('SETTING', 'save_directory')
 
 def json2dict(vote_dict,vote_list):
     """
@@ -30,7 +30,7 @@ def json2dict(vote_dict,vote_list):
         proportion = item['proportion']
         minute = dateutil.parser.parse(item['time'])
         minute =  int(minute.hour)*60 + int(minute.minute) # 시간은 분단위로 계산
-    
+
         # 동일키가 존재하면 append, 없으면 새로운 dictionary 생성
         if title in vote_dict.keys():
             vote_dict[title]['time'].append([minute])

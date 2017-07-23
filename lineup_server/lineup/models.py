@@ -16,20 +16,22 @@ class Vote(models.Model):
     title = models.CharField(max_length=100, blank=False, default='')
     time = models.CharField(max_length=100, blank=False, default='')
     proportion = models.IntegerField(blank=False, default=0)
-    sex = models.CharField(max_length=6, blank=False, default='')
-    age = models.IntegerField(blank=False, default=0)
 
     def __str__(self):
         # admin페이지에서 한눈에 알아보려고 Override함
         result = str(self.title) + '(' + str(self.proportion) + ')'
         return result
 
-class RestaurantList(models.Model):
+class Restaurant(models.Model):
     """
     가게리스트 (카테고리, 가게이름)
     """
     category = models.CharField(max_length=100, blank=False, default='bob')
     title = models.CharField(max_length=100, blank=False, default='')
+    phone_number = models.CharField(max_length=20, blank=True, default='')
+    latitude = models.CharField(max_length=20, blank=False, default='')
+    longitude = models.CharField(max_length=20, blank=False, default='')
+    menu = models.CharField(max_length=3000, blank=True, default='')
 
     def __str__(self):
         result = str(self.title) + '(' + str(self.category) + ')'
@@ -54,4 +56,3 @@ class Category(models.Model):
         return self.name
 
 
-# Create your models here.
