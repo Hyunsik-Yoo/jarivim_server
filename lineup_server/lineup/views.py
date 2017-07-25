@@ -76,7 +76,7 @@ def current(request):
                 proportion = 0
             else:
                 proportion = predicted_proportion[0].proportion
-            response_category.append({'title':restaurant.title,'proportion':proportion})
+            response_category.append({'title':restaurant.title,'proportion':proportion,'phone_number':restaurant.phone_number, 'latitude':restaurant.latitude, 'longitude':restaurant.longitude, 'menu':restaurant.menu})
         result[category.name] = response_category
     return Response(result, status=status.HTTP_201_CREATED)
 
