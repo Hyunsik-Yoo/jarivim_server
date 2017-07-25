@@ -69,7 +69,7 @@ def current(request):
     list_category = list(Category.objects.all())
     for category in list_category:
         response_category = []
-        list_restaurant = list(RestaurantList.objects.filter(category=category.name))
+        list_restaurant = list(Restaurant.objects.filter(category=category.name))
         for restaurant in list_restaurant:
             predicted_proportion = PredictProportion.objects.filter(title = restaurant.title, time= parm_time)
             if(len(predicted_proportion) == 0):
