@@ -89,16 +89,7 @@ def vote(request):
         parm_title = request.GET['title']
         parm_proportion = request.GET['proportion']
         parm_time = request.GET['time']
-        try:
-            parm_sex = request.GET['sex']
-        except:
-            parm_sex = 'none'
-
-        try:
-            parm_age = request.GET['age']
-        except:
-            parm_age = 0
-        vote = Vote(title=parm_title, time=parm_time, proportion = int(parm_proportion), sex = parm_sex, age = parm_age)
+        vote = Vote(title=parm_title, time=parm_time, proportion = int(parm_proportion))
         vote.save()
         return Response("Success",status=status.HTTP_201_CREATED)
     except Exception as e:
